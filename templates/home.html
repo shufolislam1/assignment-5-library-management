@@ -10,4 +10,23 @@
     </div>
 </div>
 
+
+<button type="button" class="btn btn-warning">All</button>
+<button type="button" class="btn btn-warning">BMW</button>
+<button type="button" class="btn btn-warning">AUDI</button>
+<button type="button" class="btn btn-warning">TOYOTA</button>
+<button type="button" class="btn btn-warning">NISSAN</button>
+<h4>Total {{cars | length}} cars found</h4>
+
+{% for car in cars %}
+    <div>
+        {% comment %} <img src="{{ car.image.url }}" alt="{{ car.name }}" style="max-width: 100px;"> {% endcomment %}
+        <h3>{{ car.name }}</h3>
+        <p>{{ car.price }}</p>
+        <p>{{ car.brand.name }}</p>
+        <p>{{car.description}}</p>
+        {% comment %} <a href="{% url 'car_details' car.id %}">View Details</a> {% endcomment %}
+    </div>
+{% endfor %}
+
 {% endblock content %}

@@ -3,6 +3,7 @@ from . import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from .models import Brand, Car
 
 # Create your views here.
 def register(request):
@@ -40,4 +41,8 @@ def userLogout(request):
     logout(request)
     messages.success(request,'logout successful')
     return redirect('userLogin')
-            
+
+def home(request):
+    brands = Brand.objects.all()
+    cars = Car.objects.all()
+    return render(request, 'home.html', {'brands': brands, 'cars': cars})
