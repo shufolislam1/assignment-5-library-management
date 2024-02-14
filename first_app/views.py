@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from . import forms
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 
 # Create your views here.
@@ -35,4 +35,9 @@ def userLogin(request):
     else:
         form = AuthenticationForm()
         return render(request,'register.html', {'form': form, 'type':'login'})
+    
+def userLogout(request):
+    logout(request)
+    messages.success(request,'logout successful')
+    return redirect('userLogin')
             
