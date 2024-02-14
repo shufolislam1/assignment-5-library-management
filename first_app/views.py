@@ -22,12 +22,12 @@ def userLogin(request):
         form = AuthenticationForm(request, request.POST)
         if form.is_valid():
             user_name = form.cleaned_data['username']
-            user_pass = form.changed_data['password']
+            user_pass = form.cleaned_data['password']
             user_authenticate = authenticate(username=user_name, password = user_pass)
             if user_authenticate is not None:
                 messages.success(request,'login successful')
                 login(request, user_authenticate)
-                return redirect('profile')
+                return redirect('home')
             else:
                 messages.warning(request, 'login info incorrect')
                 return redirect('register')
