@@ -4,6 +4,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .models import Brand, Car
+from django.views.generic import DetailView
 
 # Create your views here.
 def register(request):
@@ -56,3 +57,7 @@ def all_cars(request):
     brands = Brand.objects.all()
 
     return render(request, 'home.html', {'brands': brands, 'cars': cars})
+
+class carDetails(DetailView):
+    model = Car
+    template_name = 'car_details.html'

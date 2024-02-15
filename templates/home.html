@@ -21,11 +21,11 @@
 {% for car in cars %}
     <div>
         {% comment %} <img src="{{ car.image.url }}" alt="{{ car.name }}" style="max-width: 100px;"> {% endcomment %}
-        <h3>{{ car.name }}</h3>
-        <p>{{ car.price }}</p>
-        <p>{{ car.brand.name }}</p>
-        <p>{{car.description}}</p>
-        {% comment %} <a href="{% url 'car_details' car.id %}">View Details</a> {% endcomment %}
+        <h3>Model: {{ car.name }}</h3>
+        <p>Price: ${{ car.price }}</p>
+        <p>Brand: {{ car.brand.name }}</p>
+        <p>Description: {{car.description}}</p>
+        <button type="button" class="btn btn-warning"><a href="{% url 'carDetails' car.id %}" style="text-decoration: none;">View Details</a></button>
     </div>
 {% endfor %}
 
