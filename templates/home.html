@@ -10,12 +10,12 @@
     </div>
 </div>
 
+<button type="button" class="btn btn-warning"><a href="{% url 'all_cars' %}" style="text-decoration: none;">All</a></button>
 
-<button type="button" class="btn btn-warning">All</button>
-<button type="button" class="btn btn-warning">BMW</button>
-<button type="button" class="btn btn-warning">AUDI</button>
-<button type="button" class="btn btn-warning">TOYOTA</button>
-<button type="button" class="btn btn-warning">NISSAN</button>
+{% for brand in brands %}
+<button type="button" class="btn btn-warning"><a href='{% url "brand" brand.slug %}' style="text-decoration: none;">{{brand}}</a> </button>
+{% endfor %}
+
 <h4>Total {{cars | length}} cars found</h4>
 
 {% for car in cars %}

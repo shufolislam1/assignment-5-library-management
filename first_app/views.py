@@ -42,7 +42,17 @@ def userLogout(request):
     messages.success(request,'logout successful')
     return redirect('userLogin')
 
-def home(request):
-    brands = Brand.objects.all()
+def home(request, brand_slug = None):
     cars = Car.objects.all()
+    if brand_slug is not None:
+        brands = Brand.objects.get(slug = brand_slug)
+        cars = Car.objects.filter(brand = brands)
+    brands = Brand.objects.all()
+    
+    return render(request, 'home.html', {'brands': brands, 'cars': cars})
+
+def all_cars(request):
+    cars = Car.objects.all()
+    brands = Brand.objects.all()
+
     return render(request, 'home.html', {'brands': brands, 'cars': cars})
