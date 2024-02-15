@@ -61,3 +61,23 @@ def all_cars(request):
 class carDetails(DetailView):
     model = Car
     template_name = 'car_details.html'
+    
+    def post(self, request, *args, **kwargs):
+        car = self.get_object()
+        if self.request.method == 'POST':
+            comment_form = forms.commentForm(data=self.request.POST)
+            if comment_form.is_valid():
+                new_comment = comment_form.save(commit=False)
+                new_comment.car = car
+                new_comment.save()
+            return self.get(request, *args, **kwargs)
+        
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        car = self.object 
+        comments = car.comment.all()
+        comment_form = forms.commentForm()
+        
+        context['comments'] = comments
+        context['comments_form'] = comment_form
+        return context

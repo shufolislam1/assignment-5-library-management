@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+from .models import Comment
 
 class RegistrationForm(UserCreationForm):
     first_name = forms.CharField(widget=forms.TextInput(attrs={'id': 'required'}))
@@ -10,3 +11,8 @@ class RegistrationForm(UserCreationForm):
         model = User
         fields = ['username', 'first_name', 'last_name', 'email']
         
+        
+class commentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['name', 'email', 'body']

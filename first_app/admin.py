@@ -10,3 +10,4 @@ class brandAdmin(admin.ModelAdmin):
     list_display = ['name', 'slug']
 
 admin.site.register(models.Brand, brandAdmin)
+admin.site.register(models.Comment)
