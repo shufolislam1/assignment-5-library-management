@@ -17,16 +17,17 @@
 {% endfor %}
 
 <h4>Total {{cars | length}} cars found</h4>
-
-{% for car in cars %}
-    <div>
-        {% comment %} <img src="{{ car.image.url }}" alt="{{ car.name }}" style="max-width: 100px;"> {% endcomment %}
-        <h3>Model: {{ car.name }}</h3>
-        <p>Price: ${{ car.price }}</p>
-        <p>Brand: {{ car.brand.name }}</p>
-        <p>Description: {{car.description}}</p>
-        <button type="button" class="btn btn-warning"><a href="{% url 'carDetails' car.id %}" style="text-decoration: none;">View Details</a></button>
-    </div>
-{% endfor %}
+<div class='d-flex row my-3'>
+    {% for car in cars %}
+        <div class='col-6'>
+            <img src="{{ car.image.url }}" alt="{{ car.name }}"> 
+            <h3>Model: {{ car.name }}</h3>
+            <p>Price: ${{ car.price }}</p>
+            <p>Brand: {{ car.brand.name }}</p>
+            <p>Description: {{car.description}}</p>
+            <button type="button" class="btn btn-warning"><a href="{% url 'carDetails' car.id %}" style="text-decoration: none;">View Details</a></button>
+        </div>
+    {% endfor %}
+</div>
 
 {% endblock content %}

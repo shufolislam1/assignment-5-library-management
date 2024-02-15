@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
 from . import forms
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib import messages
 from .models import Brand, Car
 from django.views.generic import DetailView
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def register(request):
@@ -81,3 +82,42 @@ class carDetails(DetailView):
         context['comments'] = comments
         context['comments_form'] = comment_form
         return context
+    
+@login_required
+def profile(request):
+    data = Car.objects.filter(user=request.user)
+    return render(request, 'profile.html', {'data' : data})
+
+# @login_required
+# def profile(request):
+#     user_comments = Comment.objects.filter(name=request.user.username)
+#     user_cars = [comment.car for comment in user_comments]
+#     return render(request, 'profile.html', {'data': user_cars})
+    
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        profile_form = forms.ChangeUserForm(request.POST, instance = request.user)
+        if profile_form.is_valid():
+            profile_form.save()
+            messages.success(request, 'Profile Updated Successfully')
+            return redirect('profile')
+    
+    else:
+        profile_form = forms.ChangeUserForm(instance = request.user)
+    return render(request, 'update_profile.html', {'form' : profile_form})
+
+
+
+def pass_change(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, data=request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Password Updated Successfully')
+            update_session_auth_hash(request, form.user)
+            return redirect('profile')
+    
+    else:
+        form = PasswordChangeForm(user=request.user)
+    return render(request, 'pass_change.html', {'form' : form})

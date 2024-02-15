@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {%  load crispy_forms_tags %}
 {% block content %}
+<img src="{{ car.image.url }}" alt="{{ car.name }}" > 
 <h3>Model: {{ car.name }}</h3>
 <p>Price: ${{ car.price }}</p>
 <p>Brand: {{ car.brand.name }}</p>
