@@ -2,25 +2,19 @@
 {% load crispy_forms_tags %}
 {% block content %}
 
-<div>
-  <a class="btn btn-primary" href="{% url 'edit_profile' %}">
-    Edit Your Profile</a>
-</div>
-<div class="d-flex flex-wrap justify-content-center px-5 pt-5">
-  {% for car in data %}
-  <div class="col-sm-3">
-    <div class="card m-2">
-      <div class="card-body">
-        <h5 class="card-title">{{ car.name }}</h5>
-        <p class="card-text">{{ car.description }}</p>
-        <p>Brand: {{ car.brand.name }}</p>
-        <!-- Add any other attributes you want to display -->
-        <a href="{% url 'edit_post' car.id %}" class="btn btn-warning">Edit</a>
-        <a href="{% url 'delete_post' car.id %}" class="btn btn-danger">Delete</a>
-      </div>
-    </div>
-  </div>
+<h2>Your Profile</h2>
+<p><strong>Username:</strong> {{ user_data.username }}</p>
+<p><strong>First Name:</strong> {{ user_data.first_name }}</p>
+<p><strong>Last Name:</strong> {{ user_data.last_name }}</p>
+<p><strong>Email:</strong> {{ user_data.email }}</p>
+<a href="{% url 'edit_profile' %}" class="btn btn-primary">Edit Profile</a>
+{% if orders %}
+  {% for order in orders %}
+    <p>{{ order.car.name }} - {{ order.order_date }}</p>
   {% endfor %}
+{% else %}
+  <p>No orders found.</p>
+{% endif %}
 </div>
 
 {% endblock %}

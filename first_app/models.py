@@ -31,3 +31,8 @@ class Comment(models.Model):
     
     def __str__(self):
         return f"Commented by {self.name}"
+    
+class Order(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    car = models.ForeignKey(Car, on_delete=models.CASCADE)
+    order_date = models.DateTimeField(auto_now_add=True)

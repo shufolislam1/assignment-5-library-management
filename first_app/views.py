@@ -1,11 +1,12 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from . import forms
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib import messages
-from .models import Brand, Car
+from .models import Brand, Car, Order
 from django.views.generic import DetailView
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 
 # Create your views here.
 def register(request):
@@ -37,7 +38,7 @@ def userLogin(request):
             
     else:
         form = AuthenticationForm()
-        return render(request,'register.html', {'form': form, 'type':'login'})
+    return render(request,'register.html', {'form': form, 'type':'login'})
     
 def userLogout(request):
     logout(request)
@@ -82,17 +83,35 @@ class carDetails(DetailView):
         context['comments'] = comments
         context['comments_form'] = comment_form
         return context
-    
+   
+@login_required
+def buy_now(request, car_id):
+    car = get_object_or_404(Car, id=car_id)
+
+    if request.method == 'POST':
+        if car.quantity > 0:
+            car.user = request.user
+            car.quantity -= 1
+            car.save()
+            messages.success(request, 'Car purchased successfully!')
+        else:
+            messages.warning(request, 'Car is out of stock.')
+
+    return redirect('carDetails', pk=car.id)
+
+
 @login_required
 def profile(request):
-    data = Car.objects.filter(user=request.user)
-    return render(request, 'profile.html', {'data' : data})
+    user_data = {
+        'username': request.user.username,
+        'first_name': request.user.first_name,
+        'last_name': request.user.last_name,
+        'email': request.user.email,
+    }
+    orders = Order.objects.filter(user=request.user)
+    print(orders)
+    return render(request, 'profile.html', {'orders': orders, 'user_data': user_data})
 
-# @login_required
-# def profile(request):
-#     user_comments = Comment.objects.filter(name=request.user.username)
-#     user_cars = [comment.car for comment in user_comments]
-#     return render(request, 'profile.html', {'data': user_cars})
     
 @login_required
 def edit_profile(request):
@@ -109,15 +128,3 @@ def edit_profile(request):
 
 
 
-def pass_change(request):
-    if request.method == 'POST':
-        form = PasswordChangeForm(request.user, data=request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Password Updated Successfully')
-            update_session_auth_hash(request, form.user)
-            return redirect('profile')
-    
-    else:
-        form = PasswordChangeForm(user=request.user)
-    return render(request, 'pass_change.html', {'form' : form})
