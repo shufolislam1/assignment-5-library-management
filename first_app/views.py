@@ -3,7 +3,7 @@ from . import forms
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib import messages
-from .models import Brand, Car, Order
+from .models import Brand, Car
 from django.views.generic import DetailView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -108,9 +108,9 @@ def profile(request):
         'last_name': request.user.last_name,
         'email': request.user.email,
     }
-    orders = Order.objects.filter(user=request.user)
-    print(orders)
-    return render(request, 'profile.html', {'orders': orders, 'user_data': user_data})
+    # orders = Order.objects.filter(user=request.user)
+    # print(orders)
+    # return render(request, 'profile.html', {'orders': orders, 'user_data': user_data})
 
     
 @login_required
