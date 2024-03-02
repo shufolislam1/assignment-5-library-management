@@ -62,7 +62,7 @@ def all_cars(request):
 
 class carDetails(DetailView):
     model = Car
-    template_name = 'car_details.html'
+    template_name = 'book_details.html'
     
     def post(self, request, *args, **kwargs):
         car = self.get_object()
