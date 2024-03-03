@@ -1,27 +1,23 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.utils import timezone
-from django.http import HttpResponse
 from django.views.generic import CreateView, ListView
-from django.core.mail import EmailMessage, EmailMultiAlternatives
+from django.core.mail import EmailMultiAlternatives
 from django.contrib.messages.views import SuccessMessageMixin
 from django.template.loader import render_to_string
-from django.shortcuts import get_object_or_404, redirect
-from .models import Transaction
-from .forms import DepositForm, BorrowBookForm, ReviewForm, ReturnBookForm, BorrowingHistory
-# Create your views here.
-
+from .models import Transaction, BorrowingHistory
+from .forms import DepositForm, BorrowBookForm, ReviewForm, ReturnBookForm
 
 def send_transaction_email(user, amount, subject, template):
-        message = render_to_string(template, {
-            'user' : user,
-            'amount' : amount,
-        })
-        send_email = EmailMultiAlternatives(subject, '', to=[user.email])
-        send_email.attach_alternative(message, "text/html")
-        send_email.send()
+    message = render_to_string(template, {
+        'user': user,
+        'amount': amount,
+    })
+    send_email = EmailMultiAlternatives(subject, '', to=[user.email])
+    send_email.attach_alternative(message, "text/html")
+    send_email.send()
 
 class TransactionCreateMixin(LoginRequiredMixin, CreateView):
     template_name = 'transactions/transactions_form.html'
@@ -32,66 +28,71 @@ class TransactionCreateMixin(LoginRequiredMixin, CreateView):
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs.update({
-            'account': self.request.user.account
+            'book': self.request.book
         })
         return kwargs
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs) # template e context data pass kora
+        context = super().get_context_data(**kwargs)
         context.update({
-            'title': self.title
+            'title': self.title,
+            'balance': self.request.balance,
         })
-
         return context
-
 
 class DepositMoneyView(TransactionCreateMixin):
     form_class = DepositForm
     title = 'Deposit'
 
-    # def get_initial(self):
-    #     initial = {'transaction_type': DEPOSIT}
-    #     return initial
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        
+        # Assuming each user has multiple books
+        book = self.request.user.book_set.first()
+        kwargs.update({
+            'book': book,
+        })
+        return kwargs
+    
 
     def form_valid(self, form):
         amount = form.cleaned_data.get('amount')
-        account = self.request.user.account
-        # if not account.initial_deposit_date:
-        #     now = timezone.now()
-        #     account.initial_deposit_date = now
-        account.balance += amount # amount = 200, tar ager balance = 0 taka new balance = 0+200 = 200
-        account.save(
-            update_fields=[
-                'balance'
-            ]
-        )
+        user = self.request.user
+
+        # Update the user's book balance
+        user.book.balance += amount
+        user.book.save()
+
+        # Create a new transaction record
+        form.instance.user = user
+        form.instance.balance = user.book.balance - amount
+        form.instance.balance_after_transaction = user.book.balance
+        form.instance.save()
 
         messages.success(
             self.request,
             f'{"{:,.2f}".format(float(amount))}$ was deposited to your account successfully'
         )
-        send_transaction_email(self.request.user, amount, "Deposite Message", "transactions/deposite_email.html")
+
+        # Send transaction email
+        send_transaction_email(user, amount, "Deposit Message", "transactions/deposit_email.html")
+
         return super().form_valid(form)
-    
+
 class BorrowBookView(TransactionCreateMixin):
-    form_class = BorrowBookForm  # You need to create this form for book borrowing
+    form_class = BorrowBookForm
     title = 'Borrow Book'
 
-    # def get_initial(self):
-    #     initial = {'transaction_type': BORROW}  # Assuming you have a constant BORROW
-    #     return initial
-
     def form_valid(self, form):
-        book_cost = form.cleaned_data.get('book').cost
-        account = self.request.user.account
+        book_cost = form.cleaned_data.get('book').price
 
-        if account.balance >= book_cost:
+        if self.request.balance >= book_cost:
             # Sufficient balance to borrow the book
-            account.balance -= book_cost
-            account.save(update_fields=['balance'])
+            self.request.balance -= book_cost
+            self.request.save(update_fields=['balance'])
 
             # Track borrowing history
-            BorrowingHistory.objects.create(user=self.request.user, book=form.cleaned_data.get('book'))
+            BorrowingHistory.objects.create(user=self.request, book=form.cleaned_data.get('book'))
 
             messages.success(
                 self.request,
@@ -100,7 +101,7 @@ class BorrowBookView(TransactionCreateMixin):
 
             # Send email to the user about the successful borrowing
             send_transaction_email(
-                self.request.user,
+                self.request,
                 book_cost,
                 "Book Borrowed",
                 "transactions/borrow_book_email.html"
@@ -111,28 +112,21 @@ class BorrowBookView(TransactionCreateMixin):
 
         return super().form_valid(form)
 
-
 class ReturnBookView(TransactionCreateMixin, SuccessMessageMixin):
     form_class = ReturnBookForm
     title = 'Return Book'
     success_message = 'Book returned successfully'
 
-    # def get_initial(self):
-    #     return {'transaction_type': RETURN}
-
     def form_valid(self, form):
         book_cost = form.cleaned_data.get('book').cost
         amount = book_cost  # Positive value for returning
-        account = self.request.user.account
-        account.balance += amount
-        account.save(
-            update_fields=['balance']
-        )
+        self.request.balance += amount
+        self.request.save(update_fields=['balance'])
 
         # Update borrowing history with return date
         borrowing_history = get_object_or_404(
             BorrowingHistory,
-            user=self.request.user,
+            user=self.request,
             book=form.cleaned_data.get('book'),
             return_date=None
         )
@@ -143,9 +137,8 @@ class ReturnBookView(TransactionCreateMixin, SuccessMessageMixin):
             self.request,
             f'{"{:,.2f}".format(float(book_cost))}$ was added to your account for returning the book'
         )
-        send_transaction_email(self.request.user, amount, "Return Book Message", "transactions/return_book_email.html")
+        send_transaction_email(self.request, amount, "Return Book Message", "transactions/return_book_email.html")
         return super().form_valid(form)
-
 
 class ReviewBookView(LoginRequiredMixin, CreateView):
     template_name = 'transactions/review_form.html'
@@ -155,9 +148,8 @@ class ReviewBookView(LoginRequiredMixin, CreateView):
     title = 'Review Book'
 
     def form_valid(self, form):
-        form.instance.user = self.request.user
+        form.instance = self.request
         return super().form_valid(form)
-
 
 class BorrowingHistoryView(LoginRequiredMixin, ListView):
     model = BorrowingHistory
@@ -165,5 +157,4 @@ class BorrowingHistoryView(LoginRequiredMixin, ListView):
     context_object_name = 'borrowing_history'
 
     def get_queryset(self):
-        return BorrowingHistory.objects.filter(user=self.request.user)
-
+        return BorrowingHistory.objects.filter(user=self.request)

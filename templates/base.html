@@ -28,7 +28,7 @@
                       Deposit
                     </a>
                   </li>
-                  <div class="nav-link btn btn-warning text-dark">Welcome, {{ request.user.first_name }} (balance : {{request.user.account.balance}}) </div>
+                  <div class="nav-link btn btn-warning text-dark">Welcome, {{ request.user.first_name }} (balance : {{request.user.balance}}) </div>
                   <li class="nav-item">
                     <a class="nav-link btn btn-warning text-dark" href='{% url "profile" %}'>Profile</a>
                   </li>
