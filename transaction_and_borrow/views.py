@@ -28,7 +28,7 @@ class TransactionCreateMixin(LoginRequiredMixin, CreateView):
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs.update({
-            'book': self.request.book
+            'book' : self.request.user.book_set.first()
         })
         return kwargs
 

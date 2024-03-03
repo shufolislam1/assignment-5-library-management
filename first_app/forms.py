@@ -3,6 +3,17 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from .models import Comment
 from django.contrib.auth.forms import UserChangeForm
+from .models import Category, BookModel
+
+class BrandForm(forms.ModelForm):
+    class Meta:
+        moodel = Category
+        fields = '__all__'
+        
+class BookForm(forms.ModelForm):
+    class Meta:
+        model = BookModel
+        fields = '__all__'
 
 class RegistrationForm(UserCreationForm):
     first_name = forms.CharField(widget=forms.TextInput(attrs={'id': 'required'}))
