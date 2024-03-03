@@ -20,7 +20,7 @@
 <div class='d-flex row my-3'>
     {% for Book in Books %}
         <div class='col-6'>
-            <img src="{{ Book.image.url }}" alt="{{ Book.name }}"> 
+            <img style='width:100px; height:100px' src="{{ Book.image.url }}" alt="{{ Book.name }}"> 
             <h3>Model: {{ Book.name }}</h3>
             <p>Price: ${{ Book.price }}</p>
             <p>Catagory: {{ Book.Catagory.name }}</p>
