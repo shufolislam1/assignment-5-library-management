@@ -10,7 +10,7 @@
 <a href="{% url 'edit_profile' %}" class="btn btn-primary">Edit Profile</a>
 {% if orders %}
   {% for order in orders %}
-    <p>{{ order.car.name }} - {{ order.order_date }}</p>
+    <p>{{ order.Book.name }} - {{ order.order_date }}</p>
   {% endfor %}
 {% else %}
   <p>No orders found.</p>

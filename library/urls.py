@@ -1,5 +1,5 @@
 """
-URL configuration for car_house project.
+URL configuration for Book_house project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.2/topics/http/urls/
@@ -20,5 +20,6 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     # path('', views.home, name='home'),
-    path('', include('first_app.urls'))
+    path('', include('first_app.urls')),
+    path('transaction_and_borrow/', include('transaction_and_borrow.urls')),
 ]

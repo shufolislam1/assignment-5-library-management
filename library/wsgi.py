@@ -1,5 +1,5 @@
 """
-WSGI config for car_house project.
+WSGI config for Book_house project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 

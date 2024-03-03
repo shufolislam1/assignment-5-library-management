@@ -8,12 +8,12 @@ urlpatterns = [
     path('login/', views.userLogin, name='userLogin'),
     path('logout/', views.userLogout, name='userLogout'),
     path('', views.home, name='home'),
-    path('brand/<slug:brand_slug>/', views.home, name='brand'),
-    path('all_cars/', views.all_cars, name='all_cars'),
-    path('details/<int:pk>/', views.carDetails.as_view(), name='carDetails'),
+    path('Catagory/<slug:Catagory_slug>/', views.home, name='Catagory'),
+    path('all_Books/', views.all_Books, name='all_Books'),
+    path('details/<int:pk>/', views.bookDetails.as_view(), name='bookDetails'),
     path('profile/edit', views.edit_profile, name='edit_profile'),
     path('profile/', views.profile, name='profile'),
-    path('buy_now/<int:car_id>/', views.buy_now, name='buy_now'),
+    path('buy_now/<int:Book_id>/', views.buy_now, name='buy_now'),
 ]
 
 if settings.DEBUG:

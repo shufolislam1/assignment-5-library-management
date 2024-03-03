@@ -3,7 +3,7 @@ from . import forms
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib import messages
-from .models import Brand, Car
+from .models import Catagory, Book
 from django.views.generic import DetailView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -45,39 +45,39 @@ def userLogout(request):
     messages.success(request,'logout successful')
     return redirect('userLogin')
 
-def home(request, brand_slug = None):
-    cars = Car.objects.all()
-    if brand_slug is not None:
-        brands = Brand.objects.get(slug = brand_slug)
-        cars = Car.objects.filter(brand = brands)
-    brands = Brand.objects.all()
+def home(request, Catagory_slug = None):
+    Books = Book.objects.all()
+    if Catagory_slug is not None:
+        Catagorys = Catagory.objects.get(slug = Catagory_slug)
+        Books = Book.objects.filter(Catagory = Catagorys)
+    Catagorys = Catagory.objects.all()
     
-    return render(request, 'home.html', {'brands': brands, 'cars': cars})
+    return render(request, 'home.html', {'Catagorys': Catagorys, 'Books': Books})
 
-def all_cars(request):
-    cars = Car.objects.all()
-    brands = Brand.objects.all()
+def all_Books(request):
+    Books = Book.objects.all()
+    Catagorys = Catagory.objects.all()
 
-    return render(request, 'home.html', {'brands': brands, 'cars': cars})
+    return render(request, 'home.html', {'Catagorys': Catagorys, 'Books': Books})
 
-class carDetails(DetailView):
-    model = Car
+class bookDetails(DetailView):
+    model = Book
     template_name = 'book_details.html'
     
     def post(self, request, *args, **kwargs):
-        car = self.get_object()
+        Book = self.get_object()
         if self.request.method == 'POST':
             comment_form = forms.commentForm(data=self.request.POST)
             if comment_form.is_valid():
                 new_comment = comment_form.save(commit=False)
-                new_comment.car = car
+                new_comment.Book = Book
                 new_comment.save()
             return self.get(request, *args, **kwargs)
         
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        car = self.object 
-        comments = car.comment.all()
+        Book = self.object 
+        comments = Book.comment.all()
         comment_form = forms.commentForm()
         
         context['comments'] = comments
@@ -85,19 +85,19 @@ class carDetails(DetailView):
         return context
    
 @login_required
-def buy_now(request, car_id):
-    car = get_object_or_404(Car, id=car_id)
+def buy_now(request, Book_id):
+    Book = get_object_or_404(Book, id=Book_id)
 
     if request.method == 'POST':
-        if car.quantity > 0:
-            car.user = request.user
-            car.quantity -= 1
-            car.save()
-            messages.success(request, 'Car purchased successfully!')
+        if Book.quantity > 0:
+            Book.user = request.user
+            Book.quantity -= 1
+            Book.save()
+            messages.success(request, 'Book purchased successfully!')
         else:
-            messages.warning(request, 'Car is out of stock.')
+            messages.warning(request, 'Book is out of stock.')
 
-    return redirect('carDetails', pk=car.id)
+    return redirect('bookDetails', pk=Book.id)
 
 
 @login_required

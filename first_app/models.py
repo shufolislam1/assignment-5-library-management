@@ -3,16 +3,16 @@ from django.contrib.auth.models import User
 
 
 # Create your models here.
-class Brand(models.Model):
+class Catagory(models.Model):
     name = models.CharField(max_length=50)
     slug = models.SlugField(max_length=50, unique=True, null=True, blank=True)
     
     def __str__(self):
         return self.name
     
-class Car(models.Model):
+class Book(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
-    brand = models.ForeignKey(Brand,on_delete = models.CASCADE)
+    Catagory = models.ForeignKey(Catagory,on_delete = models.CASCADE)
     name = models.CharField(max_length=100)
     description = models.TextField()
     quantity = models.IntegerField(default=0)
@@ -23,7 +23,7 @@ class Car(models.Model):
         return self.name
     
 class Comment(models.Model):
-    car =  models.ForeignKey(Car, on_delete = models.CASCADE, related_name='comment')
+    Book =  models.ForeignKey(Book, on_delete = models.CASCADE, related_name='comment')
     name = models.CharField(max_length = 50)
     email = models.EmailField()
     body = models.TextField()
@@ -34,5 +34,5 @@ class Comment(models.Model):
     
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    car = models.ForeignKey(Car, on_delete=models.CASCADE)
+    Book = models.ForeignKey(Book, on_delete=models.CASCADE)
     order_date = models.DateTimeField(auto_now_add=True)
