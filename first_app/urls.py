@@ -13,7 +13,7 @@ urlpatterns = [
     path('details/<int:pk>/', views.bookDetails.as_view(), name='bookDetails'),
     path('profile/edit', views.edit_profile, name='edit_profile'),
     path('profile/', views.profile, name='profile'),
-    path('buy_now/<int:Book_id>/', views.buy_now, name='buy_now'),
+    path('buy_now/<int:book_id>/', views.buy_now, name='buy_now'),
 ]
 
 if settings.DEBUG:

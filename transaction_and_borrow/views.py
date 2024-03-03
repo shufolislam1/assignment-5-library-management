@@ -8,12 +8,11 @@ from django.views.generic import CreateView, ListView
 from django.core.mail import EmailMessage, EmailMultiAlternatives
 from django.contrib.messages.views import SuccessMessageMixin
 from django.template.loader import render_to_string
+from django.shortcuts import get_object_or_404, redirect
+from .models import Transaction
+from .forms import DepositForm, BorrowBookForm, ReviewForm, ReturnBookForm, BorrowingHistory
 # Create your views here.
 
-TRANSACTION_TYPE = (
-    ('DEPOSIT', 'Deposite'),
-    
-)
 
 def send_transaction_email(user, amount, subject, template):
         message = render_to_string(template, {
@@ -50,9 +49,9 @@ class DepositMoneyView(TransactionCreateMixin):
     form_class = DepositForm
     title = 'Deposit'
 
-    def get_initial(self):
-        initial = {'transaction_type': DEPOSIT}
-        return initial
+    # def get_initial(self):
+    #     initial = {'transaction_type': DEPOSIT}
+    #     return initial
 
     def form_valid(self, form):
         amount = form.cleaned_data.get('amount')
@@ -78,9 +77,9 @@ class BorrowBookView(TransactionCreateMixin):
     form_class = BorrowBookForm  # You need to create this form for book borrowing
     title = 'Borrow Book'
 
-    def get_initial(self):
-        initial = {'transaction_type': BORROW}  # Assuming you have a constant BORROW
-        return initial
+    # def get_initial(self):
+    #     initial = {'transaction_type': BORROW}  # Assuming you have a constant BORROW
+    #     return initial
 
     def form_valid(self, form):
         book_cost = form.cleaned_data.get('book').cost
@@ -92,7 +91,7 @@ class BorrowBookView(TransactionCreateMixin):
             account.save(update_fields=['balance'])
 
             # Track borrowing history
-            BorrowHistory.objects.create(user=self.request.user, book=form.cleaned_data.get('book'))
+            BorrowingHistory.objects.create(user=self.request.user, book=form.cleaned_data.get('book'))
 
             messages.success(
                 self.request,
@@ -118,8 +117,8 @@ class ReturnBookView(TransactionCreateMixin, SuccessMessageMixin):
     title = 'Return Book'
     success_message = 'Book returned successfully'
 
-    def get_initial(self):
-        return {'transaction_type': RETURN}
+    # def get_initial(self):
+    #     return {'transaction_type': RETURN}
 
     def form_valid(self, form):
         book_cost = form.cleaned_data.get('book').cost
@@ -161,9 +160,10 @@ class ReviewBookView(LoginRequiredMixin, CreateView):
 
 
 class BorrowingHistoryView(LoginRequiredMixin, ListView):
-    model = BorrowHistory
+    model = BorrowingHistory
     template_name = 'transactions/borrowing_history.html'
     context_object_name = 'borrowing_history'
 
     def get_queryset(self):
-        return BorrowHistory.objects.filter(user=self.request.user)
+        return BorrowingHistory.objects.filter(user=self.request.user)
+

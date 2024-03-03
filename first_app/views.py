@@ -7,6 +7,7 @@ from .models import Catagory, Book
 from django.views.generic import DetailView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from .models import Order
 
 # Create your views here.
 def register(request):
@@ -85,19 +86,19 @@ class bookDetails(DetailView):
         return context
    
 @login_required
-def buy_now(request, Book_id):
-    Book = get_object_or_404(Book, id=Book_id)
+def buy_now(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
 
     if request.method == 'POST':
-        if Book.quantity > 0:
-            Book.user = request.user
-            Book.quantity -= 1
-            Book.save()
+        if book.quantity > 0:
+            book.user = request.user
+            book.quantity -= 1
+            book.save()
             messages.success(request, 'Book purchased successfully!')
         else:
             messages.warning(request, 'Book is out of stock.')
 
-    return redirect('bookDetails', pk=Book.id)
+    return redirect('bookDetails', pk=book.id)
 
 
 @login_required
@@ -108,9 +109,9 @@ def profile(request):
         'last_name': request.user.last_name,
         'email': request.user.email,
     }
-    # orders = Order.objects.filter(user=request.user)
-    # print(orders)
-    # return render(request, 'profile.html', {'orders': orders, 'user_data': user_data})
+    orders = Order.objects.filter(user=request.user)
+    print(orders)
+    return render(request, 'profile.html', {'orders': orders, 'user_data': user_data})
 
     
 @login_required
