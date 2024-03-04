@@ -33,6 +33,7 @@ class Comment(models.Model):
     name = models.CharField(max_length = 50)
     email = models.EmailField()
     body = models.TextField()
+    user = models.ForeignKey(User, on_delete = models.CASCADE, related_name='user')
     created_on = models.DateTimeField(auto_now_add = True)
     
     def __str__(self):

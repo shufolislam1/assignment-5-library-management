@@ -24,6 +24,9 @@
             <h3>Name: {{ Book.title }}</h3>
             <p>Borrowing Price: ${{ Book.borrowing_price }}</p>
             <p>Description: {{Book.description}}</p>
+            {% for j in object.category.all %}
+            <button class="relative inline-flex items-center justify-center px-2 py-1 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-gray-600 to-green-500 disabled" disabled>{{j.name}}</button>
+            {% endfor %}
             <button type="button" class="btn btn-warning"><a href="{% url 'bookDetails' Book.id %}" style="text-decoration: none;">View Details</a></button>
         </div>
     {% endfor %}

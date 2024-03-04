@@ -8,12 +8,57 @@
 <p><strong>Last Name:</strong> {{ user_data.last_name }}</p>
 <p><strong>Email:</strong> {{ user_data.email }}</p>
 <a href="{% url 'edit_profile' %}" class="btn btn-primary">Edit Profile</a>
-{% if orders %}
-  {% for order in orders %}
-    <p>{{ order.Book.name }} - {{ order.order_date }}</p>
-  {% endfor %}
-{% else %}
-  <p>No orders found.</p>
-{% endif %}
+
+
+<div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+  <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+      <thead class="text-xs text-black uppercase bg-gray-500 dark:bg-gray-700 dark:text-gray-400">
+          <tr>
+              <th scope="col" class="px-6 py-3">
+                  Book name
+              </th>
+              <th scope="col" class="px-6 py-3">
+                  User name
+              </th>
+              <th scope="col" class="px-6 py-3">
+                  Borrowed Date
+              </th>
+              <th scope="col" class="px-6 py-3">
+                  Borrowed Price
+              </th>
+              <th scope="col" class="px-6 py-3">
+                  Action
+              </th>
+              <th scope="col" class="px-6 py-3">
+                  Action
+              </th>
+          </tr>
+      </thead>
+      <tbody>
+          {% for i in data %}
+          <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+              <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                  <a class="text-blue-600" href="{% url 'bookDetails' i.book.id %}">{{i.book}}</a>
+              </th>
+              <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                  {{i.user}}
+              </td>
+              <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                  {{i.borrowing_date}}
+              </td>
+              <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                  {{i.book.borrowing_price}}
+              </td>
+              {% comment %} <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                  <a href="{% url 'returnbook' i.id %}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">ReturnBook</a>
+              </td>
+              <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                  <a href="{% url 'comment_views' i.book.id %}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Feedback </a>
+              </td> {% endcomment %}
+          </tr>
+          {% endfor %} 
+      </tbody>
+  </table>
+</div>
 
 {% endblock %}

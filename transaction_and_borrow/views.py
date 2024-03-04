@@ -85,15 +85,37 @@ class DepositMoneyView(View):
                     f'{"{:,.2f}".format(float(amount))}$ is deposited to your account successfully'
                 )
 
-                send_transaction_email(request.user, amount, "Deposit Message", "deposit_email.html")
+                # send_transaction_email(request.user, amount, "Deposit Message", "deposit_email.html")
                 return redirect('home')
         else:
             form = DepositForm()
 
         return render(request, self.template_name, {'form': form})
 
-class BorrowedBookView(View):
-    template_name = 'book_details.html'  # Add your template name
+def deposit_money(request):
+    user_account = request.user.account  
+    
+    if request.method == 'POST':
+        form = DepositForm(request.POST)
+        if form.is_valid():
+            amount = form.cleaned_data['amount']
+            user_account.balance += amount
+            user_account.save()
+            messages.success(
+            request,
+            f'{"{:,.2f}".format(float(amount))}$ is deposited to your account successfully'
+            )
+
+            # send_transaction_email(request.user, amount, "Deposit Message", "deposit_email.html")
+            return redirect('home')  
+        
+
+    else:
+        form = DepositForm()
+
+    return render(request, 'transactions/deposit_money.html', {'form': form})
+
+class BorrowedBookView(View):  # Add your template name
 
     def get(self, request, id):
         book = get_object_or_404(Book, pk=id)
@@ -109,7 +131,7 @@ class BorrowedBookView(View):
                 f'{"{:,.2f}".format(float(borrowing_price))}$ is borrowed book successfully'
                 )
 
-            send_transaction_email(request.user, borrowing_price, "Borrowed Book Message", "borrowed_book_email.html")
+            # send_transaction_email(request.user, borrowing_price, "Borrowed Book Message", "borrowed_book_email.html")
         else:
             messages.success(
                 request,
@@ -132,7 +154,7 @@ class ReturnBookView(View):
             'Borrowed book is returned successfully'
         )
 
-        send_transaction_email(request.user, int(record.book.borrowing_price), "Return Book Message", "return_book_email.html")
+        # send_transaction_email(request.user, int(record.book.borrowing_price), "Return Book Message", "return_book_email.html")
         return redirect('profile')
 
 # class ReviewBookView(LoginRequiredMixin, CreateView):

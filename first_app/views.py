@@ -8,6 +8,7 @@ from django.views.generic import DetailView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .models import Order
+from transaction_and_borrow.models import  BorrowingHistory
 
 # Create your views here.
 def register(request):
@@ -114,7 +115,10 @@ def profile(request):
     }
     orders = Order.objects.filter(user=request.user)
     print(orders)
-    return render(request, 'profile.html', {'orders': orders, 'user_data': user_data})
+    data = BorrowingHistory.objects.filter(user=request.user)
+    
+    return render(request, 'profile.html', {'orders': orders, 'user_data': user_data, 'data':data})
+
 
     
 @login_required
