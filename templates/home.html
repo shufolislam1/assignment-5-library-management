@@ -16,7 +16,7 @@
 <button type="button" class="btn btn-warning"><a href="{% url 'Catagory' Catagory_slug=Catagory.slug %}" style="text-decoration: none;">{{Catagory}}</a> </button>
 {% endfor %}
 
-<h4>Total {{Books | length}} Books found</h4>
+<h4>Total {{ Books | length }} Books found</h4>
 <div class='d-flex row my-3'>
     {% for Book in Books %}
         <div class='col-6'>

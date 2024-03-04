@@ -47,10 +47,13 @@ def userLogout(request):
     return redirect('userLogin')
 
 def home(request, Catagory_slug = None):
+    print("Category Slug:", Catagory_slug)
     Books = Book.objects.all()
     if Catagory_slug is not None:
-        Catagorys = Catagory.objects.get(slug = Catagory_slug)
-        Books = Book.objects.filter(Catagory = Catagorys)
+        category = get_object_or_404(Catagory, slug=Catagory_slug)
+        print("Selected Category:", category.id)
+        Books = Book.objects.filter(Catagory = category)
+        print("Generated Query:", Books.query)
     Catagorys = Catagory.objects.all()
     
     return render(request, 'home.html', {'Catagorys': Catagorys, 'Books': Books})

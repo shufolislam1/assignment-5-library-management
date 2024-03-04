@@ -7,7 +7,7 @@ from django.views.generic import CreateView, ListView, DetailView
 from django.core.mail import EmailMultiAlternatives
 from django.contrib.messages.views import SuccessMessageMixin
 from django.template.loader import render_to_string
-from .models import Transaction, BorrowingHistory
+from .models import  BorrowingHistory
 from .forms import DepositForm, CommentForm
 from django.views import View
 from first_app.models import Book
@@ -20,26 +20,26 @@ def send_transaction_email(user, amount, subject, template):
     send_email.attach_alternative(message, "text/html")
     send_email.send()
 
-class TransactionCreateMixin(LoginRequiredMixin, CreateView):
-    template_name = 'transactions/transactions_form.html'
-    model = Transaction
-    title = ''
-    success_url = reverse_lazy('transaction_report')
+# class TransactionCreateMixin(LoginRequiredMixin, CreateView):
+#     template_name = 'transactions/transactions_form.html'
+#     model = Transaction
+#     title = ''
+#     success_url = reverse_lazy('transaction_report')
 
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs.update({
-            'book' : self.request.user.book_set.first()
-        })
-        return kwargs
+#     def get_form_kwargs(self):
+#         kwargs = super().get_form_kwargs()
+#         kwargs.update({
+#             'book' : self.request.user.book_set.first()
+#         })
+#         return kwargs
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context.update({
-            'title': self.title,
-            'balance': self.request.balance,
-        })
-        return context
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context.update({
+#             'title': self.title,
+#             'balance': self.request.balance,
+#         })
+#         return context
 
 # def deposit_money(request):
 #     user_account = request.user.account  
@@ -63,7 +63,6 @@ class TransactionCreateMixin(LoginRequiredMixin, CreateView):
 #         form = DepositForm()
 
 #     return render(request, 'deposit_money.html', {'form': form})
-
 class DepositMoneyView(View):
     template_name = 'transactions/deposit_money.html'  # Replace with the actual template name
 
@@ -72,23 +71,26 @@ class DepositMoneyView(View):
         return render(request, self.template_name, {'form': form})
 
     def post(self, request, *args, **kwargs):
-        form = DepositForm(request.POST)
-        if form.is_valid():
-            user_account = request.user.account
-            amount = form.cleaned_data['amount']
-            user_account.balance += amount
-            user_account.save()
+        user_account = request.user.account
+        
+        if request.method == 'POST':
+            form = DepositForm(request.POST)
+            if form.is_valid():
+                amount = form.cleaned_data['amount']
+                user_account.balance += amount
+                user_account.save()
+                
+                messages.success(
+                    request,
+                    f'{"{:,.2f}".format(float(amount))}$ is deposited to your account successfully'
+                )
 
-            messages.success(
-                request,
-                f'{"{:,.2f}".format(float(amount))}$ is deposited to your account successfully'
-            )
-
-            send_transaction_email(request.user, amount, "Deposit Message", "transactions/deposit_money.html")
-            return redirect('home')
+                send_transaction_email(request.user, amount, "Deposit Message", "deposit_email.html")
+                return redirect('home')
+        else:
+            form = DepositForm()
 
         return render(request, self.template_name, {'form': form})
-
 
 class BorrowedBookView(View):
     template_name = 'book_details.html'  # Add your template name
