@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}POST Details{% endblock title %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+
+{% comment %}========================Review================================ {% endcomment %}
+<div>
+    <h5 class="text-xl text-gray-900 dark:text-white">Total review : {{comments | length}}</h5>
+    <div>
+      {% for c in comments %}
+      <div>
+        <div>
+         <span class="text-xl text-gray-900 dark:text-white">Review by:</span>  {{c.user}}
+       </div>
+        <div>
+           <p> <span class="text-xl text-gray-900 dark:text-white"></span>{{c.body}}</p>
+         
+        </div>
+        <div>
+         <span class="text-xl text-gray-900 dark:text-white"></span> {{c.created_on}}
+        </div>
+      </div>
+      <br><br>
+
+      {% endfor %}
+    </div>
+  </div>
+{% comment %}==============================Add Review=======================  {% endcomment %}
+<div class="card container mt-5 mb-5 bg-body-secondary">
+    <div class="card-body">
+      
+      <h1>Add Review</h1>
+      <form method="post">
+          {% csrf_token %}
+          {{comment_form | crispy}}
+          <button type="submit" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-3 me-2 mb-10 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Submit</button>
+      </form>
+    </div>
+  </div>
+
+  
+{% endblock content %}

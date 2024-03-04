@@ -13,7 +13,7 @@
 <button type="button" class="btn btn-warning"><a href="{% url 'all_Books' %}" style="text-decoration: none;">All</a></button>
 
 {% for Catagory in Catagorys %}
-<button type="button" class="btn btn-warning"><a href='{% url "Catagory" Catagory.slug %}' style="text-decoration: none;">{{Catagory}}</a> </button>
+<button type="button" class="btn btn-warning"><a href="{% url 'Catagory' Catagory_slug=Catagory.slug %}" style="text-decoration: none;">{{Catagory}}</a> </button>
 {% endfor %}
 
 <h4>Total {{Books | length}} Books found</h4>
@@ -21,9 +21,8 @@
     {% for Book in Books %}
         <div class='col-6'>
             <img style='width:100px; height:100px' src="{{ Book.image.url }}" alt="{{ Book.name }}"> 
-            <h3>Model: {{ Book.name }}</h3>
-            <p>Price: ${{ Book.price }}</p>
-            <p>Catagory: {{ Book.Catagory.name }}</p>
+            <h3>Name: {{ Book.title }}</h3>
+            <p>Borrowing Price: ${{ Book.borrowing_price }}</p>
             <p>Description: {{Book.description}}</p>
             <button type="button" class="btn btn-warning"><a href="{% url 'bookDetails' Book.id %}" style="text-decoration: none;">View Details</a></button>
         </div>

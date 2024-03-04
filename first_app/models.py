@@ -21,16 +21,6 @@ class Book(models.Model):
     def __str__(self):
         return self.title
     
-class Comment(models.Model):
-    Book =  models.ForeignKey(Book, on_delete = models.CASCADE, related_name='comment')
-    name = models.CharField(max_length = 50)
-    email = models.EmailField()
-    body = models.TextField()
-    created_on = models.DateTimeField(auto_now_add = True)
-    
-    def __str__(self):
-        return f"Commented by {self.name}"
-    
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     book = models.ForeignKey(Book, on_delete=models.CASCADE)

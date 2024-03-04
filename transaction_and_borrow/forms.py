@@ -1,38 +1,24 @@
 from django import forms
-from .models import Transaction, BorrowingHistory, Review
+from .models import Comment
 
-class TransactionForm(forms.ModelForm):
+class DepositForm(forms.Form):
+    amount = forms.DecimalField(label='Amount', max_digits=12, decimal_places=2)
+
+class CommentForm(forms.ModelForm):
     class Meta:
-        model = Transaction
-        fields = [
-            'amount'
-        ]
-
-    def save(self, commit=True):
-        self.instance.balance_after_transaction = self.instance.book.balance
-        return super().save()
-
-class DepositForm(TransactionForm):
-    def clean_amount(self):
-        min_deposit_amount = 100
-        amount = self.cleaned_data.get('amount')
-        if amount < min_deposit_amount:
-            raise forms.ValidationError(
-                f'You need to deposit at least {min_deposit_amount} $'
-            )
-        return amount
+        model = Comment
+        fields = ['body']
     
-class BorrowBookForm(forms.ModelForm):
-    class Meta:
-        model = BorrowingHistory
-        fields = ['book']
-
-class ReviewForm(forms.ModelForm):
-    class Meta:
-        model = Review
-        fields = ['rating', 'comment']
-
-class ReturnBookForm(forms.ModelForm):
-    class Meta:
-        model = BorrowingHistory
-        fields = []  # No fields needed for returning; handled in the view
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({
+                
+                'class' : (
+                    'appearance-none block w-full bg-gray-200 '
+                    'text-gray-700 border border-gray-200 rounded '
+                    'py-3 px-4 leading-tight focus:outline-none '
+                    'focus:bg-white focus:border-gray-500'
+                ) 
+            })
