@@ -92,30 +92,8 @@ class DepositMoneyView(View):
 
         return render(request, self.template_name, {'form': form})
 
-def deposit_money(request):
-    user_account = request.user.account  
-    
-    if request.method == 'POST':
-        form = DepositForm(request.POST)
-        if form.is_valid():
-            amount = form.cleaned_data['amount']
-            user_account.balance += amount
-            user_account.save()
-            messages.success(
-            request,
-            f'{"{:,.2f}".format(float(amount))}$ is deposited to your account successfully'
-            )
 
-            # send_transaction_email(request.user, amount, "Deposit Message", "deposit_email.html")
-            return redirect('home')  
-        
-
-    else:
-        form = DepositForm()
-
-    return render(request, 'transactions/deposit_money.html', {'form': form})
-
-class BorrowedBookView(View):  # Add your template name
+class BorrowedBookView(View): 
 
     def get(self, request, id):
         book = get_object_or_404(Book, pk=id)
@@ -157,24 +135,6 @@ class ReturnBookView(View):
         # send_transaction_email(request.user, int(record.book.borrowing_price), "Return Book Message", "return_book_email.html")
         return redirect('profile')
 
-# class ReviewBookView(LoginRequiredMixin, CreateView):
-#     template_name = 'transactions/review_form.html'
-#     form_class = ReviewForm
-#     model = Transaction
-#     success_url = reverse_lazy('book_list')  # Update with your book list URL
-#     title = 'Review Book'
-
-#     def form_valid(self, form):
-#         form.instance = self.request
-#         return super().form_valid(form)
-
-# class BorrowingHistoryView(LoginRequiredMixin, ListView):
-#     model = BorrowingHistory
-#     template_name = 'transactions/borrowing_history.html'
-#     context_object_name = 'borrowing_history'
-
-#     def get_queryset(self):
-#         return BorrowingHistory.objects.filter(user=self.request)
 class CommentView(DetailView):
     model = Book
     template_name = 'transactions/comment.html'
