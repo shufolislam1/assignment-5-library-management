@@ -29,11 +29,11 @@ class BorrowingHistory(models.Model):
     
     
 class Comment(models.Model):
-    book =  models.ForeignKey(Book, on_delete = models.CASCADE, related_name='comment')
+    book =  models.ForeignKey(Book, on_delete = models.CASCADE, related_name='comments', default=1)
     name = models.CharField(max_length = 50)
     email = models.EmailField()
     body = models.TextField()
-    user = models.ForeignKey(User, on_delete = models.CASCADE, related_name='user')
+    user = models.ForeignKey(User, on_delete = models.CASCADE, related_name='user', default=1)
     created_on = models.DateTimeField(auto_now_add = True)
     
     def __str__(self):

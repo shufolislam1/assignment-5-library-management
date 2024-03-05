@@ -29,7 +29,6 @@ class RegistrationForm(UserCreationForm):
         if commit == True:
             user.save() # user model a data save hobe
              
-#================== UserBankAccountModel model a data save hobe=========================#
             UserAccountModel.objects.create(
                 user = user,
                 account_no = 1000000 + user.id
@@ -57,8 +56,8 @@ class RegistrationForm(UserCreationForm):
         
  
  
-# class ChangeUserForm(UserChangeForm):
-#     password = None
-#     class Meta:
-#         model = User
-#         fields = ['username', 'first_name', 'last_name', 'email']
+class ChangeUserForm(UserChangeForm):
+    password = None
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email']
