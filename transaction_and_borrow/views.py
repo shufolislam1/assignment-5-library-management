@@ -64,7 +64,7 @@ def send_transaction_email(user, amount, subject, template):
 
 #     return render(request, 'deposit_money.html', {'form': form})
 class DepositMoneyView(View):
-    template_name = 'transactions/deposit_money.html'  # Replace with the actual template name
+    template_name = 'transactions/deposit_money.html'
 
     def get(self, request, *args, **kwargs):
         form = DepositForm()
@@ -85,7 +85,7 @@ class DepositMoneyView(View):
                     f'{"{:,.2f}".format(float(amount))}$ is deposited to your account successfully'
                 )
 
-                # send_transaction_email(request.user, amount, "Deposit Message", "deposit_email.html")
+                send_transaction_email(request.user, amount, "Deposit Message", "transactions/deposit_email.html")
                 return redirect('home')
         else:
             form = DepositForm()
@@ -109,7 +109,7 @@ class BorrowedBookView(View):
                 f'{"{:,.2f}".format(float(borrowing_price))}$ is borrowed book successfully'
                 )
 
-            # send_transaction_email(request.user, borrowing_price, "Borrowed Book Message", "borrowed_book_email.html")
+            send_transaction_email(request.user, borrowing_price, "Borrowed Book Message", "borrowed_book_email.html")
         else:
             messages.success(
                 request,
@@ -158,4 +158,4 @@ class CommentView(DetailView):
         context['comments'] = comments
         context['comment_form'] = comment_form
         context['book'] = book
-        return context
+        return context  

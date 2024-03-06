@@ -13,7 +13,7 @@
 <button type="button" class="btn btn-warning"><a href="{% url 'all_Books' %}" style="text-decoration: none;">All</a></button>
 
 {% for Catagory in Catagorys %}
-<button type="button" class="btn btn-warning"><a href="{% url 'Catagory' Catagory_slug=Catagory.slug %}" style="text-decoration: none;">{{Catagory}}</a> </button>
+<button type="button" class="btn btn-warning"><a href="{% url 'catagory' Catagory_slug=Catagory.slug %}" style="text-decoration: none;">{{Catagory}}</a> </button>
 {% endfor %}
 
 <h4>Total {{ Books | length }} Books found</h4>
