@@ -107,7 +107,7 @@ DATABASES = {
         default='postgres://library_management_xm0r_user:HcvBgPNPIcKd5z0DPIOF7yqueDpLLITY@dpg-cnk8a4ol5elc73d5ap0g-a.oregon-postgres.render.com/library_management_xm0r',           
     )
 }
-ALLOWED_HOSTS = ['198.211.99.20', 'http://assignment-5-library-management.onrender.com/']
+ALLOWED_HOSTS = ['.localhost', '127.0.0.1', '[::1]']
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
