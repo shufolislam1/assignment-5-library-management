@@ -73,7 +73,7 @@ class BorrowedBookView(View):
                 f'{"{:,.2f}".format(float(borrowing_price))}$ Borrowing price is more than your account balance. Please deposit more'
                 )
 
-        return redirect(reverse("bookDetails", args=[book.id]))
+        return redirect(reverse("home", args=[book.id]))
 
 class ReturnBookView(View):
 
