@@ -20,49 +20,6 @@ def send_transaction_email(user, amount, subject, template):
     send_email.attach_alternative(message, "text/html")
     send_email.send()
 
-# class TransactionCreateMixin(LoginRequiredMixin, CreateView):
-#     template_name = 'transactions/transactions_form.html'
-#     model = Transaction
-#     title = ''
-#     success_url = reverse_lazy('transaction_report')
-
-#     def get_form_kwargs(self):
-#         kwargs = super().get_form_kwargs()
-#         kwargs.update({
-#             'book' : self.request.user.book_set.first()
-#         })
-#         return kwargs
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context.update({
-#             'title': self.title,
-#             'balance': self.request.balance,
-#         })
-#         return context
-
-# def deposit_money(request):
-#     user_account = request.user.account  
-    
-#     if request.method == 'POST':
-#         form = DepositForm(request.POST)
-#         if form.is_valid():
-#             amount = form.cleaned_data['amount']
-#             user_account.balance += amount
-#             user_account.save()
-#             messages.success(
-#             request,
-#             f'{"{:,.2f}".format(float(amount))}$ is deposited to your account successfully'
-#             )
-
-#             send_transaction_email(request.user, amount, "Deposit Message", "deposit_email.html")
-#             return redirect('home')  
-        
-
-#     else:
-#         form = DepositForm()
-
-#     return render(request, 'deposit_money.html', {'form': form})
 class DepositMoneyView(View):
     template_name = 'transactions/deposit_money.html'
 
@@ -109,7 +66,7 @@ class BorrowedBookView(View):
                 f'{"{:,.2f}".format(float(borrowing_price))}$ is borrowed book successfully'
                 )
 
-            send_transaction_email(request.user, borrowing_price, "Borrowed Book Message", "borrowed_book_email.html")
+            send_transaction_email(request.user, borrowing_price, "Borrowed Book Message", "transactions/borrowed_book_email.html")
         else:
             messages.success(
                 request,

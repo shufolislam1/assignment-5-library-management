@@ -68,26 +68,7 @@ def all_Books(request):
 class bookDetails(DetailView):
     model = Book
     template_name = 'book_details.html'
-    
-    # def post(self, request, *args, **kwargs):
-    #     Book = self.get_object()
-    #     if self.request.method == 'POST':
-    #         comment_form = forms.commentForm(data=self.request.POST)
-    #         if comment_form.is_valid():
-    #             new_comment = comment_form.save(commit=False)
-    #             new_comment.Book = Book
-    #             new_comment.save()
-    #         return self.get(request, *args, **kwargs)
-        
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     Book = self.object 
-    #     comments = Book.comment.all()
-    #     comment_form = forms.commentForm()
-        
-    #     context['comments'] = comments
-    #     context['comments_form'] = comment_form
-    #     return context
+
    
 @login_required
 def buy_now(request, book_id):
