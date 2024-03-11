@@ -70,20 +70,20 @@ class bookDetails(DetailView):
     template_name = 'book_details.html'
 
    
-@login_required
-def buy_now(request, book_id):
-    book = get_object_or_404(Book, id=book_id)
+# @login_required
+# def buy_now(request, book_id):
+#     book = get_object_or_404(Book, id=book_id)
 
-    if request.method == 'POST':
-        if book.quantity > 0:
-            book.user = request.user
-            book.quantity -= 1
-            book.save()
-            messages.success(request, 'Book purchased successfully!')
-        else:
-            messages.warning(request, 'Book is out of stock.')
+#     if request.method == 'POST':
+#         if book.quantity > 0:
+#             book.user = request.user
+#             book.quantity -= 1
+#             book.save()
+#             messages.success(request, 'Book purchased successfully!')
+#         else:
+#             messages.warning(request, 'Book is out of stock.')
 
-    return redirect('bookDetails', pk=book.id)
+#     return redirect('bookDetails', pk=book.id)
 
 
 @login_required

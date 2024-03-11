@@ -52,7 +52,7 @@ class DepositMoneyView(View):
 
 class BorrowedBookView(View): 
 
-    def get(self, request, id):
+    def post(self, request, id):
         book = get_object_or_404(Book, pk=id)
         user_balance = int(request.user.account.balance)
         borrowing_price = int(book.borrowing_price)
@@ -73,7 +73,7 @@ class BorrowedBookView(View):
                 f'{"{:,.2f}".format(float(borrowing_price))}$ Borrowing price is more than your account balance. Please deposit more'
                 )
 
-        return redirect(reverse("bookDetails", args=[book.id]))
+        return redirect('profile')
 
 class ReturnBookView(View):
 

@@ -2,9 +2,8 @@
 <img src="{{ book.image.url }}" alt="{{ book.name }}" />
 <h3>Name: {{ book.title }}</h3>
 <p>Borrowing Price: ${{ book.borrowing_price }}</p>
-<p>Catagory: {{ book.name }}</p>
 <p>Description: {{book.description}}</p>
-<p>Quantity: {{book.quantity}}</p>
+
 
 
 {% if user.is_authenticated %}
@@ -13,75 +12,7 @@
   <button type="submit" class="btn btn-warning mb-5">Borrow Now</button>
  </form>
 {% endif %}
-{% comment %} 
-<div class="card m-2">
-  Total Comments : {{comments | length}}
-  <div class="card-body">
-    {% for comment in comments %}
-    <div class="card p-2">
-      <p>{{comment.name}}</p>
-      <p>{{comment.body}}</p>
-      <p>{{comment.created_on}}</p>
-    </div>
-    {% endfor %}
-  </div>
-</div> {% endcomment %}
 
-{% comment %} <form style="width: 50%; margin: auto" method="post">
-  <h1>Add Comment</h1>
-  {% csrf_token %} {{comments_form | crispy }}
-  <button class="btn btn-warning mb-5">Submit</button>
-</form> {% endcomment %}
 
 {% endblock content %}
 
-{% comment %} {% extends "base.html" %}
-
-{% block title %}Book Details{% endblock title %}
-{% load crispy_forms_tags %}
-{% block content %}
-<div>
-    <div class="grid grid-cols-1 gap-4">
-        <div><img src="{{object.image.url}}" class="rounded-t-lg py-2 flex justify-center" alt="user image"></div>
-    
-        <div>
-            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{object.title}}</h5>
-                        
-            <p class="mb-3 font-normal text-gray-700 dark:text-gray-400"><b>Borrowing Price : ${{object.borrowing_price}}</b></p>
-            <div class="mb-2">
-                <b>Categories : -</b>
-                {% for j in object.category.all %}
-                <button class="relative inline-flex items-center justify-center px-2 py-1 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-gray-600 to-green-500 disabled" disabled>{{j.name}}</button>
-                {% endfor %}
-            </div>
-            <p class="mb-3 font-normal text-gray-700 dark:text-gray-400"><b>Description: </b>{{object.description}}</p>
-            <a href="{% url 'borrow_book' object.id %}" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">BorrowBook</a>
-        </div>
-    </div>
-</div>
-
-<div class="card container mt-5 mb-12 pt-3 bg-body-secondary">
-    <h5 class="text-xl text-gray-900 dark:text-white"><b>Total comments :</b> {{comments | length}}</h5>
-    <div class="card-body">
-      {% for c in comments %}
-      <div>
-        <div>
-         <span class="text-xl text-gray-900 dark:text-white">Review by: </span>  {{c.user}}
-       </div>
-        <div>
-           <p> <span class="text-xl text-gray-900 dark:text-white"></span>{{c.body}}</p>
-         
-        </div>
-        <div>
-         <span class="text-xl text-gray-900 dark:text-white"></span> {{c.created_on}}
-        </div>
-      </div>
-      <br><br>
-
-      {% endfor %}
-    </div>
-  </div>
-  <div class="py-12"></div>
-
-
-{% endblock content %} {% endcomment %}
